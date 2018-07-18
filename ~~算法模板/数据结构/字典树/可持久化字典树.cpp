@@ -18,13 +18,13 @@ struct trie{
         return re;
     }
     int query(int l,int r,int val){//询问在l、r结点之间 与val异或最大的结果
-        int tmp=0;
+        int re=0;
         for(int i=23;i>=0;i--){
             int t=val&bin[i];t>>=i;
             if(sum[ch[r][t^1]]-sum[ch[l][t^1]])
-                tmp+=bin[i],r=ch[r][t^1],l=ch[l][t^1];
+                re+=bin[i],r=ch[r][t^1],l=ch[l][t^1];
             else r=ch[r][t],l=ch[l][t];
         }
-        return tmp;
+        return re;
     }
 }trie;
