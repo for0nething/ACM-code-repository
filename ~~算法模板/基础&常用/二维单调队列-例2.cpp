@@ -1,3 +1,7 @@
+/*
+    2018 牛客多校2 K
+    https://www.nowcoder.com/acm/contest/140#question
+*/
 #pragma comment(linker, "/STACK:1024000000,1024000000")
 #include <cstdio>
 #include <iostream>
@@ -19,11 +23,13 @@
 #include <limits.h>
 #include <iomanip>
 //#include <unordered_map>
+//#include <unordered_set>
 //#include <bits/stdc++.h>
 using namespace std;
 #define rank rankk
 #define mp make_pair
 #define pb push_back
+#define eb emplace_back
 #define xo(a,b) ((b)&1?(a):0)
 #define tm tmp
 
@@ -40,12 +46,12 @@ const int INF=0x3f3f3f3f;
 //const ll INF=0x3f3f3f3f3f3f3f3fll;
 const ll INFF=0x3f3f3f3f3f3f3f3fll;
 //const ll INFF=1e14+5;
-const int MAX=1e5+10;
-const int M=1e6+15;
+const int MAX=1e6+10;
+//const int M=(1<<20)+5;
 //const int M=2500007;
 //const ll MAXN=2e8;
 //const int MAX_N=MAX;
-const int MOD=1e9+7;
+const ll MOD=1e9+7;
 //const ull MOD=1e7+7;
 //const ll MOD=998244353;
 //const long double pi=acos(-1.0);
@@ -80,6 +86,11 @@ inline ll powMM(ll a,ll b,ll M){
     }
     return ret;
 }
+
+ll mul(ll a , ll b,ll Q){
+    return (a * b - (ll) ((long double)a * b / Q) * Q) % Q;
+}
+
 //const long double eps=-1.0;
 //clock_t t1 = clock();
 //fprintf(stderr, "%ld ms\n", clock() - t1);
@@ -89,54 +100,76 @@ void open()
     freopen("output.txt","w",stdout);
 }
 //#define debug
-ll inv;
-int a[MAX];
-void fwt(int *a,int l,int r)
-{
-    if(l==r)return;
-    int n=(r-l+1)/2,mid=l+n-1;
-    fwt(a,l,mid);fwt(a,mid+1,r);
-    for(int i=l;i<=mid;i++)
-    {
-        ll x=a[i],y=a[i+n];
-        a[i]=(x+y)%MOD;a[i+n]=(x-y+MOD)%MOD;
+const ll magic=31;
+int n,m,x,y,st,en;
+char a[MAX];
+int f[MAX];
+ll c[MAX],maxh[MAX],maxl[MAX];
+ll row[MAX],col[MAX],re[30],que[MAX],loq[MAX];
+void getf(ll *z,int m){
+    f[0]=f[1]=0;
+    for(int i=2,j=0;i<=m;i++){
+        while(j&&z[j+1]!=z[i])j=f[j];
+        if(z[j+1]==z[i])++j;
+        f[i]=j;
     }
 }
-void dwt(int *a,int l,int r)
-{
-    if(l==r)return;
-    int n=(r-l+1)/2,mid=l+n-1;
-    dwt(a,l,mid);dwt(a,mid+1,r);
-    for(int i=l;i<=mid;i++)
-    {
-        ll x=a[i],y=a[i+n];
-        a[i]=(x+y)%MOD*inv%MOD;a[i+n]=(x-y+MOD)%MOD*inv%MOD;
+#define id(x,y) ((x-1)*m+y)
+/*
+    二维单调队列
+    n*m的矩阵中 处理每个w*l 的矩阵的最大值
+*/
+void getmax(int w,int l,ll *z){
+    for(int i=1;i<=n;i++){
+        st=1;en=0;
+        for(int j=1;j<=m;j++){
+            while(st<=en&&loq[st]+l-1<j)++st;
+            while(st<=en&&que[en]<=z[id(i,j)])--en;
+            que[++en]=z[id(i,j)];
+            loq[en]=j;
+            maxh[id(i,j)]=que[st];
+        }
+    }
+    for(int i=1;i<=m;i++){
+        st=1,en=0;
+        for(int j=1;j<=n;j++){
+            while(st<=en&&loq[st]+w-1<j)++st;
+            while(st<=en&&que[en]<=maxh[id(j,i)])--en;
+            que[++en]=maxh[id(j,i)];
+            loq[en]=j;
+            maxl[id(j,i)]=que[st];
+        }
     }
 }
-ll cal(int l,int r,int n)
-{
-    int N=1;
-    while(N<=r)N<<=1;
-    for(int i=0;i<N;i++)a[i]=(i<=r&&i>=l)?1:0;
-    fwt(a,0,N-1);
-    for(int i=0;i<N;i++)a[i]=powMM(a[i],n,MOD);  //待改
-    dwt(a,0,N-1);
-    return (a[0]+MOD)%MOD;
-}
-int n,m,l,r;
 int main()
 {
-    inv=powMM(2,MOD-2,MOD);
-    while(~scanf("%d%d%d%d",&n,&m,&l,&r))
-    {
-        n=2*n+1;
-        ll ans=0;
-        for(int i=l;i<=r;i++)(ans+=cal(i,m+i,n))%=MOD;
-        printf("%lld\n",ans);
+    for(int i=0;i<=25;i++)re[i]=i+1;
+    random_shuffle(re,re+26);
+    read(n);read(m);
+    for(int i=1;i<=n;i++){
+        scanf("%s",a+1);
+        for(int j=1;j<=m;j++){
+            row[i]=(row[i]*magic%MOD+re[a[j]-'a'])%MOD;
+            col[j]=(col[j]*magic%MOD+re[a[j]-'a'])%MOD;
+        }
     }
+    getf(row,n);x=n-f[n];//宽 （循环节的宽）
+    getf(col,m);y=m-f[m];//长 （循环节的长）
+    for(int i=1;i<=n;i++)
+        for(int j=1;j<=m;j++)
+            read(c[id(i,j)]);
+    getmax(x,y,c);
+    ll an=INFF;
+    for(int i=x;i<=n;i++)
+        for(int j=y;j<=m;j++)an=min(an,maxl[id(i,j)]);
+    printf("%lld\n",an*(x+1)*(y+1));
     return 0;
 }
 /*
-1 3 1 3
-2 3 2 5
+4 1 0
+1 2
+
+4 1 1
+1 2
+3 4
 */

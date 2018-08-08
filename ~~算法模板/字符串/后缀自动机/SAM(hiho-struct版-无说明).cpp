@@ -23,7 +23,15 @@ struct SAM
     }
     int add_char(char ch,int u)
     {
+
         int c=ch-CH;
+        /*
+            建广义自动机即插完一个串后 回到root（0）
+            在这里下一行不做修改
+            或加入(2018.8.3UPD:完全不用加这句话！)
+            if(trans[u][c]!=-1&&maxlen[trans[u][c]]==maxlen[u]+1)return trans[u][c];
+            若没有if成功则继续下述操作
+        */
         int z=new_state(maxlen[u]+1,-1,NULL,-1);
         pre[z]=true;//该结点必为包含原串前缀的结点
         int v=u;
@@ -48,7 +56,6 @@ struct SAM
             return z;
         }
         int y=new_state(maxlen[v]+1,-1,trans[x],slink[x]);//最复杂的情况，拆分x
-        slink[y]=slink[x];
         ind[y]+=2;
         minlen[x]=maxlen[y]+1;
         slink[x]=y;
