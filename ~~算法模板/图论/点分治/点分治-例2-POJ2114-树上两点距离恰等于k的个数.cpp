@@ -1,7 +1,3 @@
-/*
-    POJ 1741
-*/
-
 #pragma comment(linker, "/STACK:1024000000,1024000000")
 #include <cstdio>
 #include <iostream>
@@ -95,65 +91,72 @@ void open()
 //#define debug
 struct node
 {
-    int to,dis,nxt;
+    int to,nxt,dis;
+    node(){};
+    node(int _to,int _nxt,int _dis):to(_to),nxt(_nxt),dis(_dis){};
 }edg[MAX<<2];
-int n,ecnt,tot,rt,k;//tot为某一时刻的树上总点数 rt为重心
-int h[MAX],siz[MAX],f[MAX];//f[i]记录当前状态i点最大子树的大小
-int a[MAX],d[MAX];//d数组记录某点到根节点的距离
+int n,m,ecnt,k,rt,an,tot;
+int h[MAX],siz[MAX],f[MAX],d[MAX],a[MAX];
 bool vi[MAX];
-int an;
 void add_edge(int u,int v,int d)
 {
-    edg[++ecnt]=node{v,d,h[u]};
+    edg[++ecnt]=node(v,h[u],d);
     h[u]=ecnt;
 }
-void dfs(int now,int fa)//找中心 计算siz
+void dfs(int now,int fa)//找重心
 {
     siz[now]=1;f[now]=0;
     for(int i=h[now];i;i=edg[i].nxt)
     {
         int to=edg[i].to;
-        if(!vi[to]&&to!=fa){
-            dfs(to,now);siz[now]+=siz[to];f[now]=max(f[now],siz[to]);
-        }
+        if(!vi[to]&&to!=fa)
+            dfs(to,now),siz[now]+=siz[to],f[now]=max(f[now],siz[to]);
     }
-    f[now]=max(tot-siz[now],f[now]);
-//    cout<<f[now]<<endl;
+    f[now]=max(f[now],tot-siz[now]);
     if(f[now]<f[rt])rt=now;
 }
-void pre(int now,int prre)//计算每一点到根节点距离
+void cal_dis(int now,int fa)
 {
     a[++a[0]]=d[now];
     for(int i=h[now];i;i=edg[i].nxt)
     {
         int to=edg[i].to;
-        if(!vi[to]&&to!=prre){
-            d[to]=d[now]+edg[i].dis;pre(to,now);
-        }
+        if(!vi[to]&&to!=fa)
+            d[to]=d[now]+edg[i].dis,cal_dis(to,now);
     }
 }
-//初始d[now]=ds以此为基准(保证每点深度不变)
-int cal(int now,int ds)//计算以某一点为根 有多少a[i]+a[j]<=k的点对（可能在一条链上）
+int cal_num(int now,int pred)
 {
     int re=0;
-    d[now]=ds;a[0]=0;pre(now,0);
+    d[now]=pred;a[0]=0;cal_dis(now,0);
     sort(a+1,a+a[0]+1);
     int l=1,r=a[0];
     while(l<r)
     {
-        if(a[l]+a[r]<=k)re+=r-l,++l;
+        if(a[l]+a[r]==k){//只统计和恰为k的
+            if(a[l]==a[r]){
+                re+=(r-l+1)*(r-l)/2;break;//深度相等 深度为此的个数设为x 则有C(x,2)对
+            }
+            int i=l,j=r;
+            while(a[i]==a[l])++i;
+            while(a[j]==a[r])--j;
+            re+=(i-l)*(r-j);//深度不同 乘法原理 两种个数的乘积
+            l=i;r=j;
+        }
+        else if(a[l]+a[r]<k)++l;
         else --r;
     }
+
     return re;
 }
-void solve(int x)//求解以x为根的个数
+void solve(int x)
 {
-    an+=cal(x,0);vi[x]=1;//初始为所有个数
+    an+=cal_num(x,0);vi[x]=1;
     for(int i=h[x];i;i=edg[i].nxt)
     {
         int to=edg[i].to;
         if(!vi[to]){
-            an-=cal(to,edg[i].dis);tot=siz[to];rt=0;//去掉在一个子树的
+            an-=cal_num(to,edg[i].dis);tot=siz[to];rt=0;
             dfs(to,0);solve(rt);
         }
     }
@@ -163,17 +166,27 @@ int main()
     #ifdef debug
         freopen("2.in","r",stdin);
     #endif // debug
-    read(n);
-    for(int u,v,w,i=1;i<n;i++)
+    while(scanf("%d",&n)&&n)
     {
-        read(u);read(v);read(w);
-        add_edge(u,v,w);add_edge(v,u,w);
+        ecnt=0;memset(vi,0,sizeof(vi));
+        memset(h,0,sizeof(h));
+        for(int v,d,i=1;i<=n;i++)
+        {
+            while(scanf("%d",&v)&&v){
+                scanf("%d",&d);
+                add_edge(i,v,d);add_edge(v,i,d);
+            }
+        }
+        while(scanf("%d",&k)&&k){
+            an=0;rt=0;
+            memset(vi,0,sizeof(vi));
+            f[0]=n+1;tot=n;
+            dfs(1,0);solve(rt);
+            puts(an>0?"AYE":"NAY");
+        }
+        puts(".");
     }
-    read(k);f[0]=n+1;
-    tot=n;
-    dfs(1,0);
-    solve(rt);
-    printf("%d\n",an);
+
     return 0;
 }
 /*

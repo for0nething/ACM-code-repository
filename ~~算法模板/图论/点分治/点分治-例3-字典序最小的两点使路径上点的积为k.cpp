@@ -149,21 +149,21 @@ void solve(int now)
         int to=edg[i].to;
         if(!vi[to])
         {
-            dcnt=0;d[to]=a[to];
+            dcnt=0;d[to]=a[to];//先只从该子树走 这样能与之前处理过的其他子树连接起来
             dfs(to,now);
             for(int j=1;j<=dcnt;j++)
                 query(temd[j],id[j]);
             dcnt=0;d[to]=(1LL*a[now]*a[to])%MOD;
             dfs(to,now);
-            for(int j=1;j<=dcnt;j++)
+            for(int j=1;j<=dcnt;j++)//枚举该子树中每一个点
             {
                 int now=mp[temd[j]];
                 if(!now||now>id[j])mp[temd[j]]=id[j];
             }
         }
     }
-    //���map
-    mp[a[now]]=0;
+
+    mp[a[now]]=0;//清空map
     for(int i=h[now];i;i=edg[i].nxt)
     {
         int to=edg[i].to;
@@ -181,7 +181,7 @@ void solve(int now)
         {
             rt=0;tot=siz[to];
             getrt(to,0);
-            solve(rt);
+            solve(rt);//开始去处理某个子树的重心
         }
     }
 

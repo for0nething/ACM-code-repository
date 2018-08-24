@@ -174,23 +174,16 @@ int main()
         read(n);int siz=sqrt(n);
         for(int i=1;i<=n;i++)read(a[i]);
         init();
-//        printf("???\n");
         for(int i=1;i<=n;i++){
             int r=i;
-//            cout<<i<<endl;
             vl[i].clear();
             while(r<=n){
-//                cout<<r<<endl;
                 int who=query(i,r);
-
                 r=Lsearch(i,r,n,who);
-//                if(i==4)cout<<who<<"!!!!"<<r<<endl;
                 vl[i].pb(mp(who,r));
                 ++r;
-//                if(i==4){cout<<"r="<<r<<endl;system("pause");}
             }
         }
-//        printf("!!\n");
         for(int i=n;i>=1;i--)
         {
             int l=i;
@@ -214,7 +207,6 @@ int main()
             while(lol<qs[i].al)sum-=lcal(lol,lor),++lol;
             while(lor>qs[i].ar)sum-=rcal(lor,lol),--lor;
             an[qs[i].id]=sum;
-//            cout<<"id="<<qs[i].id<<" sum="<<sum<<endl;
         }
         for(int i=0;i<m;i++)
             printf("%lld\n",an[i]);

@@ -97,6 +97,7 @@ void addq(int type,int x,int y,int w,int aid){
     query[qidx++]=(Query){type,x,y,w,aid};
 }
 int ans[MAX];
+//尽管BIT查询会出现坐标为0，而函数中都从1开始or结束 但无影响只要有0就返回0即可
 namespace BIT{
     int arr[MAX];
     inline int lowbit(int num){return num&(-num);}
@@ -157,9 +158,11 @@ int main()
     while(m--){
         int xl,yl,xr,yr;
         read(xl);read(yl);read(xr);read(yr);
+        ++xl;++yl;++xr;++yr;
         addq(1,xl-1,yl-1,1,aidx);
         addq(1,xl-1,yr,-1,aidx);
         addq(1,xr,yl-1,-1,aidx);
+        addq(1,xr,yr,1,aidx);
         ++aidx;
         maxy=max(maxy,yr);
     }

@@ -7,25 +7,60 @@
 
 */
 
-void fwt(int *a,int l,int r)
+/*
+    最速版 非递归 速度远超其他 DWT只需加一个除2操作 这里FWT展示的是不取模的 DWT展示的是取模的
+    使用是 for(int i=0;i<n;i++)a[i]=a[i]*b[i] 这里也可以加取模操作 在模意义下不影响结果
+*/
+template<typename T>void FWT(T* a,int len)
+{
+    for (int hl = 1, l = 2; l <= len; hl = l, l <<= 1)
+        for (T i = 0; i < len; i += l)
+        for (register T t, j = 0, *x = a + i, *y = x + hl; j < hl; ++j, ++x, ++y) t = *x + *y, *y = *x - *y, *x = t; return;
+}
+
+
+template<typename T>void DWT(T* a,int len,int inv)
+{
+    for (int hl = 1, l = 2; l <= len; hl = l, l <<= 1)
+        for (T i = 0; i < len; i += l)
+        for (register T t, j = 0, *x = a + i, *y = x + hl; j < hl; ++j, ++x, ++y) t = mul(add(*x , *y),inv), *y = mul(inv,add(*x,MOD - *y)), *x = t; return;
+}
+/*
+    不通过DWT 直接O(n)获取 某一下标的 DWT后的结果 cnt[i]表示i的二进制1的个数 可以预处理出来
+    addi(int &x,int y) 修改x的值 （模意义下）
+    模可能会产生问题（毕竟是模意义的hash处理 但概率很小）可以多hash解决
+*/
+int cnt[MAX];
+int get(int* a,int len,int pos){
+    int re=0;
+    for(int i=0;i<len;i++)
+        if(cnt[i&pos]&1)addi(re,MOD-a[i]);
+        else addi(re,a[i]);
+    return re;
+}
+
+/*
+    递归 n稍大一点就很慢了
+*/
+template<typename T> void fwt(T *a,int l,int r)
 {
     if(l==r)return;
     int n=(r-l+1)/2,mid=l+n-1;
     fwt(a,l,mid);fwt(a,mid+1,r);
     for(int i=1;i<=mid;i++)
     {
-        int x=a[i],y=a[i+n];
+        T x=a[i],y=a[i+n];
         a[i]=x+y;a[i+n]=x-y;
     }
 }
-void dwt(int *a,int l,int r)
+template<typename T> void dwt(T *a,int l,int r)
 {
     if(l==r)return;
     int n=(r-l+1)/2,mid=l+n-1;
     dwt(a,l,mid);dwt(a,mid+1,r);
     for(int i=1;i<=mid;i++)
     {
-        int x=a[i],y=a[i+n];
+        T x=a[i],y=a[i+n];
         a[i]=(x+y)/2;a[i+n]=(x-y)/2;
     }
 }
