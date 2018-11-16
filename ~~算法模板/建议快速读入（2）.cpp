@@ -7,7 +7,7 @@ namespace IO { // øÏ∂¡œ‡πÿ
             end = fread( buf, 1, BUFSZ, stdin ); idx = 0;
         }
         if( idx == end ) return EOF;
-        return buf[idx++];
+        return buf[idx++]
     }
     int getint() {
         int num = 0; char ch;

@@ -47,9 +47,9 @@ struct matrix
             for(int j=1;j<=col;j++)e[i][j]=(i==j?1:0);
     }
     /*
-        逆元版求行列式 似乎有问题
+        逆元版求行列式 似乎有问题// 需要注意 结果为0时返回的为-1
     */
-    int det(int n)//求行列式的值模上MOD，需要使用逆元 即上述的逆元函数，如需要可提前预处理
+    int det(int n)//n^3 求行列式的值模上MOD，需要使用逆元 即上述的逆元函数，如需要可提前预处理
     {
         for(int i = 1;i <= n;i++)
         for(int j = 1;j <= n;j++)
@@ -57,7 +57,7 @@ struct matrix
         int res = 1;
         for(int i = 1;i <= n;i++)
         {
-            for(int j = i;j <= n;j++)
+            for(int j = i;j <= n;j++)//向后找该列非0的
             if(e[j][i]!=0)
             {
                 for(int k = i;k <= n;k++) swap(e[i][k],e[j][k]);

@@ -34,13 +34,13 @@ struct Matrix
         for(int i = 0;i < n;i++)
         {
             for(int j = i;j < n;j++)
-            if(mat[j][i]!=0)
-            {
-                for(int k = i;k < n;k++) swap(mat[i][k],mat[j][k]);
-                if(i != j)
-                    res = (-res+MOD)%MOD;
-                break;
-            }
+                if(mat[j][i]!=0)
+                {
+                    for(int k = i;k < n;k++) swap(mat[i][k],mat[j][k]);
+                    if(i != j)
+                        res = (-res+MOD)%MOD;
+                    break;
+                }
             if(mat[i][i] == 0)
             {
                 res = -1;//不存在(也就是行列式值为0)
@@ -51,7 +51,7 @@ struct Matrix
                 //int mut = (mat[j][i]*INV[mat[i][i]])%MOD;//打表逆元
                 int mut = (mat[j][i]*inv(mat[i][i],MOD))%MOD;
                 for(int k = i;k < n;k++)
-                mat[j][k] = (mat[j][k]-(mat[i][k]*mut)%MOD+MOD)%MOD;
+                    mat[j][k] = (mat[j][k]-(mat[i][k]*mut)%MOD+MOD)%MOD;
             }
             res = (res * mat[i][i])%MOD;
         }

@@ -1,7 +1,7 @@
 const int MAXN=20010;
 int t1[MAXN],t2[MAXN],c[MAXN];//求SA数组需要的中间变量，不需要赋值
 //待排序的字符串放在s数组中，从s[0]到s[n-1],长度为n,且最大值小于m,
-//除s[n-1]外的所有s[i]都大于0，r[n-1]=0
+//除s[n-1]外的所有s[i]都大于0，r[n-1]=0 （即在原串后加一个0 原串的值都在[1,m)区间 函数第一行已加不用再自己改）
 //函数结束以后结果放在sa数组中
 bool cmp(int *r,int a,int b,int l)
 {
@@ -46,7 +46,7 @@ void da(int str[],int sa[],int rank[],int height[],int n,int m)
 }
 int rank[MAXN],height[MAXN];
 int RMQ[MAXN];
-int mm[MAXN];
+int mm[MAXN];//mm[i] : 满足2^x<=i的x的最大值（初始化mm[0]=-1）
 
 
 int best[20][MAXN];
