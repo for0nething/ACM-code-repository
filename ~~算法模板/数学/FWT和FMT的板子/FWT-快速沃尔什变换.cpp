@@ -15,7 +15,8 @@ template<typename T>void FWT(T* a,int len)
 {
     for (int hl = 1, l = 2; l <= len; hl = l, l <<= 1)
         for (T i = 0; i < len; i += l)
-        for (register T t, j = 0, *x = a + i, *y = x + hl; j < hl; ++j, ++x, ++y) t = *x + *y, *y = *x - *y, *x = t; return;
+        for (register T t, j = 0, *x = a + i, *y = x + hl; j < hl; ++j, ++x, ++y)
+            t = *x + *y, *y = *x - *y, *x = t; return;
 }
 
 
@@ -23,7 +24,8 @@ template<typename T>void DWT(T* a,int len,int inv)
 {
     for (int hl = 1, l = 2; l <= len; hl = l, l <<= 1)
         for (T i = 0; i < len; i += l)
-        for (register T t, j = 0, *x = a + i, *y = x + hl; j < hl; ++j, ++x, ++y) t = mul(add(*x , *y),inv), *y = mul(inv,add(*x,MOD - *y)), *x = t; return;
+        for (register T t, j = 0, *x = a + i, *y = x + hl; j < hl; ++j, ++x, ++y)
+            t = mul(add(*x , *y),inv), *y = mul(inv,add(*x,MOD - *y)), *x = t; return;
 }
 /*
     不通过DWT 直接O(n)获取 某一下标的 DWT后的结果 cnt[i]表示i的二进制1的个数 可以预处理出来

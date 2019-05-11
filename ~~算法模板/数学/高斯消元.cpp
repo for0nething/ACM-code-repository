@@ -6,6 +6,8 @@ double a[MAXN][MAXN],x[MAXN];//方程的左边的矩阵(初始存在a中，下标从0开始）和等式
 int equ,var;//方程数和未知数个数
 /*
 *返回0表示无解，1表示有解
+如果存在无关变量 默认不返回有解的结果（x中的值无效） 直接return 0
+如果想在存在无关变量的情况下仍然有返回 需要按代码中的注释进行修改
 */
 int Gauss()
 {
@@ -17,6 +19,7 @@ int Gauss()
             if(fabs(a[i][col])>fabs(a[max_r][col]))
                 max_r=i;
         if(fabs(a[max_r][col])<eps)return 0;
+        //若想在存在无关变量的情况下仍然有返回 将return 0改成continue！
         if(k!=max_r)
         {
             for(j=col;j<var;j++) swap(a[k][j],a[max_r][j]);

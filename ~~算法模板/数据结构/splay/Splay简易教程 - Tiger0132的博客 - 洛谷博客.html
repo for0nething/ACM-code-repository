@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)https://tiger0132.blog.luogu.org/slay-notes -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Splay简易教程 - Tiger0132的博客 - 洛谷博客</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="blog-uid" content="20791">
+<meta name="blog-name" content="Tiger0132的博客">
+<meta name="current-user" content="">
+<link rel="stylesheet" href="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/common.css">
+<style>
+    #article-content img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+    }
+  </style>
+<link rel="stylesheet" href="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/article.css">
+<style type="text/css">.away[data-v-4374f9ca]{margin-top:14px}.bread-comment[data-v-4374f9ca]{width:100%;display:inline-flex;margin-top:5px;margin-bottom:5px}.post-meta[data-v-4374f9ca]{display:inline-block}.post-content .post-message p[data-v-4374f9ca]:last-child{margin:0}.post-content .post-message p[data-v-4374f9ca]{line-height:21px;margin:0 0 15px}</style></head>
+<body>
+<nav class="bread-navbar navbar-default navbar-custom navbar-fixed-top navbar-white">
+<div class="container-fluid">
+<div class="navbar-header page-scroll">
+<button class="btn navbar-toggle" type="button" style="float:right;">
+<span class="sr-only">Toggle navigation</span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+<a class="navbar-brand" href="https://tiger0132.blog.luogu.org/">Tiger0132的博客</a>
+</div>
+<div id="bread-navbar" class=" ">
+<div class="navbar-collapse" style="height: 0px;">
+<ul class="nav navbar-nav bread-navbar-nav navbar-right">
+<li class="nav-item">
+<a href="https://tiger0132.blog.luogu.org/">文章</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</nav>
+<style>
+  .intro-header {
+    background-image: url();
+    background-size: cover;
+  }
+</style>
+<header class="footer bread-height-extended intro-header main-head">
+<div class="container" style="padding-top: 100px;">
+<div class="row">
+<div class="col">
+<div class="site-heading">
+<h1 id="bread-blog-title" style="font-style: normal;">Tiger0132的博客</h1>
+<div id="bread-blog-subtitle" class="subheading">Across the Great Firewall we can reach every corner in the world.</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<style>
+  .main-head {
+    visibility: hidden;
+    display: none;
+  }
+
+  pre {
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+  }
+</style>
+<header class="footer bread-height-extended intro-header">
+<div class="container" style="padding-top: 100px;">
+<div class="row">
+<div class="col">
+<div class="site-heading">
+<h1 id="bread-blog-title" style="font-style: normal;text-align: left;">Splay简易教程</h1>
+<div class="bread-blog-meta" style="text-align: left;">127 likes, on 2018-08-02 21:45:56, in <a class="tag" style="color:#fff;" href="https://tiger0132.blog.luogu.org/#type=%E6%B4%9B%E5%92%95%E6%97%A5%E7%88%86">洛咕日爆</a></div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class="container" id="blog-container" style="margin-top: 30px;" data-blogid="54385" data-vote="0" data-thumbup="127">
+<div class="row">
+<div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+<div id="article-content" style="margin-top: 30px; margin-bottom: 30px;">
+<h1>一些锅的澄清</h1>
+<p>@<a href="https://www.luogu.org/space/show?uid=92770">March_H</a> 真是一位预言家 dalao……</p>
+<h2>关于 find</h2>
+<p>find 原来的定义有锅，更新为：</p>
+<p>当原数存在时，find 会返回原数。否则 find 会返回<strong>当前数的前驱或后继</strong>。</p>
+<p><strong>在 pre 和 succ 中，find 得到的根可以当做原数使用。</strong></p>
+<h2>关于 rank</h2>
+<p>rank 在原数不存在的时候会出锅。</p>
+<p>当 find 得到前驱的时候，根节点的 cnt 也是答案的一部分，必须加上。</p>
+<p>rank 操作更新如下：</p>
+<pre><code class="language-cpp hljs">find(x);
+<span class="hljs-keyword">if</span> (val[root] &gt;= x) <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, size[ch[root][<span class="hljs-number">0</span>]] - <span class="hljs-number">1</span>);
+<span class="hljs-keyword">else</span> <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, size[ch[root][<span class="hljs-number">0</span>]] + cnt[root] - <span class="hljs-number">1</span>);</code></pre>
+<h3><strong>Upd 2018.12.23</strong></h3>
+<p>rank 操作中 <code>-1</code> 的原因是初始化时 insert 了极小值。如果不 insert 最小值，需要删掉 <code>-1</code>。</p>
+<h1>简介</h1>
+<p>二叉排序树（Binary Sort Tree）又称二叉查找树（Binary Search Tree），亦称二叉搜索树。</p>
+<p>二叉排序树或者是一棵空树，或者是具有下列性质的二叉树：</p>
+<ol>
+<li>若左子树不空，则左子树上所有结点的值均小于或等于它的根结点的值；</li>
+<li>若右子树不空，则右子树上所有结点的值均大于或等于它的根结点的值；</li>
+<li>左、右子树也分别为二叉排序树</li>
+</ol>
+<p>同样的序列，因为排序不同，可能会生成不同的二叉排序树，查找效率性对就不一定了。如果是二叉排序树退化成一条链，效率就很低。</p>
+<p>伸展树（Splay）是一种平衡二叉树，即优化后的二叉查找树。伸展树可以自我调整，这就要依靠伸展操作Splay(x,S)，使得提升效率。</p>
+<p><strong>⚠️多图预警</strong></p>
+<p>图片均为原创，协议为CC0，<strong><em>尽量</em></strong>保留原地址。</p>
+<p><del>劼司机的图片风格太赞啦</del></p>
+<h1>前置技能</h1>
+<p>线段树。</p>
+<h1>变量定义</h1>
+<p><code>N</code>：常量，节点个数。</p>
+<p><code>ch[N][2]</code>：二维数组，<code>ch[x][0]</code>代表 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.43056em;"></span><span class="strut bottom" style="height: 0.43056em; vertical-align: 0em;"></span><span class="base"><span class="mord mathit">x</span></span></span></span></span> 的左儿子，<code>ch[x][1]</code>代表 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.43056em;"></span><span class="strut bottom" style="height: 0.43056em; vertical-align: 0em;"></span><span class="base"><span class="mord mathit">x</span></span></span></span></span> 的右儿子。</p>
+<p><code>val[N]</code>：一维数组，<code>val[x]</code>代表 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.43056em;"></span><span class="strut bottom" style="height: 0.43056em; vertical-align: 0em;"></span><span class="base"><span class="mord mathit">x</span></span></span></span></span> 存储的值。</p>
+<p><code>cnt[N]</code>：一维数组，<code>cnt[x]</code>代表 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.43056em;"></span><span class="strut bottom" style="height: 0.43056em; vertical-align: 0em;"></span><span class="base"><span class="mord mathit">x</span></span></span></span></span> 存储的重复权值的个数。</p>
+<p><code>par[N]</code>：一维数组，<code>par[x]</code>代表 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.43056em;"></span><span class="strut bottom" style="height: 0.43056em; vertical-align: 0em;"></span><span class="base"><span class="mord mathit">x</span></span></span></span></span> 的父节点。</p>
+<p><code>size[N]</code>：一维数组，<code>size[x]</code>代表 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.43056em;"></span><span class="strut bottom" style="height: 0.43056em; vertical-align: 0em;"></span><span class="base"><span class="mord mathit">x</span></span></span></span></span> 子树下的储存的权值数（包括重复权值）。</p>
+<h1>各种操作</h1>
+<h2>chk操作</h2>
+<p>辅助操作，查询一个节点位于其父节点的方向。</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">chk</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">return</span> ch[par[x]][<span class="hljs-number">1</span>] == x;
+}</code></pre>
+<h2>pushup操作</h2>
+<p>辅助操作，更新size数组的值。</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">pushup</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    size[x] = size[ch[x][<span class="hljs-number">0</span>]] + size[ch[x][<span class="hljs-number">1</span>]] + cnt[x];
+}</code></pre>
+<h2>旋转(rotate)</h2>
+<p>Splay使用旋转保持平衡。所以旋转是最重要的操作，也是最核心的操作。</p>
+<p><strong>Splay旋转后，中序遍历和Splay的合法性不变。</strong></p>
+<p>比如最开始的树是这样子的：</p>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/src.svg" alt=""></p>
+<p>现在我们想把 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>2</mn></mrow><annotation encoding="application/x-tex">2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.64444em; vertical-align: 0em;"></span><span class="base"><span class="mord">2</span></span></span></span></span> 号点搞到 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>4</mn></mrow><annotation encoding="application/x-tex">4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.64444em; vertical-align: 0em;"></span><span class="base"><span class="mord">4</span></span></span></span></span> 号点的位置。</p>
+<p>那么 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>2</mn></mrow><annotation encoding="application/x-tex">2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.64444em; vertical-align: 0em;"></span><span class="base"><span class="mord">2</span></span></span></span></span> 下面的子树就有 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>1</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mn>4</mn><mo separator="true">,</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">1,3,4,5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.83888em; vertical-align: -0.19444em;"></span><span class="base"><span class="mord">1</span><span class="mpunct">,</span><span class="mord rule" style="margin-right: 0.166667em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right: 0.166667em;"></span><span class="mord">4</span><span class="mpunct">,</span><span class="mord rule" style="margin-right: 0.166667em;"></span><span class="mord">5</span></span></span></span></span> 。一种比较优秀的玩法是这样的：</p>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/subtree.svg" alt=""></p>
+<p>那么我们可以考虑这么操作：</p>
+<ol>
+<li>先把 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>4</mn><mo>→</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">4\rightarrow2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.64444em; vertical-align: 0em;"></span><span class="base"><span class="mord">4</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mrel">→</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mord">2</span></span></span></span></span> 的边改成 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>4</mn><mo>→</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">4\rightarrow3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.64444em; vertical-align: 0em;"></span><span class="base"><span class="mord">4</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mrel">→</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mord">3</span></span></span></span></span> 。</li>
+<li>再把 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>6</mn><mo>→</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">6\rightarrow4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.64444em; vertical-align: 0em;"></span><span class="base"><span class="mord">6</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mrel">→</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mord">4</span></span></span></span></span> 的边改成 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>6</mn><mo>→</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">6\rightarrow2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.64444em; vertical-align: 0em;"></span><span class="base"><span class="mord">6</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mrel">→</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mord">2</span></span></span></span></span> 。</li>
+<li>最后把 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>2</mn><mo>→</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">2\rightarrow3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.64444em; vertical-align: 0em;"></span><span class="base"><span class="mord">2</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mrel">→</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mord">3</span></span></span></span></span> 的边改成 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>2</mn><mo>→</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">2\rightarrow4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.64444em; vertical-align: 0em;"></span><span class="base"><span class="mord">2</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mrel">→</span><span class="mord rule" style="margin-right: 0.277778em;"></span><span class="mord">4</span></span></span></span></span> 。</li>
+</ol>
+<h3>第一次连边</h3>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/p1.svg" alt=""></p>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/p1x.svg" alt=""></p>
+<h3>第二次连边</h3>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/p2.svg" alt=""></p>
+<h3>第三次连边</h3>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/dest.svg" alt=""></p>
+<h3>连边前(原图)</h3>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/src.svg" alt=""></p>
+<p>旋转操作有四种。自行模拟后发现：</p>
+<p>旋转后，父节点会将连向需旋转的该子节点的方向的边连向该子节点位于其父节点方向的反方向的节点。</p>
+<p>令<code>x = 该节点, y = par[x], k = chk(x), w = ch[x][k^1]</code>，则<code>ch[y][k] = w; par[w] = y;</code></p>
+<p>旋转后，爷爷节点会将连向父节点的边连向需旋转的该节点。</p>
+<p><code>ch[z][chk(y)] = x; par[x] = z;</code></p>
+<p>旋转后，需旋转的该节点会将连向该子节点位于其父节点方向的反方向的子节点的边连向其父节点。</p>
+<p><code>ch[x][k^1] = y; par[y] = x;</code></p>
+<p>综合一下，得到下列代码(<del>可见自然语言是多么的无力</del>)：</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">rotate</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> y = par[x], z = par[y], k = chk(x), w = ch[x][k^<span class="hljs-number">1</span>];
+    ch[y][k] = w; par[w] = y;
+    ch[z][chk(y)] = x; par[x] = z;
+    ch[x][k^<span class="hljs-number">1</span>] = y; par[y] = x;
+    pushup(y); pushup(x);
+}</code></pre>
+<h2>伸展(splay)</h2>
+<p>将一个节点一路rotate到指定节点的儿子。</p>
+<p>注意，如果该节点、该父节点和该爷爷节点「三点一线」，那么应该先旋转父节点。</p>
+<p>此处进行的操作是将 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>3</mn></mrow><annotation encoding="application/x-tex">3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.64444em; vertical-align: 0em;"></span><span class="base"><span class="mord">3</span></span></span></span></span> splay到根节点。</p>
+<h3>原图</h3>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/splay-src.svg" alt=""></p>
+<h3>旋转父节点后</h3>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/splay-p1.svg" alt=""></p>
+<h3>旋转自身后</h3>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/splay-p2.svg" alt=""></p>
+<p>剩下的情况<del>自行模拟</del>没图片了。</p>
+<p>并且注意处理爷爷节点已经是目标的情况。</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">splay</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> goal = <span class="hljs-number">0</span>)</span> </span>{
+    <span class="hljs-keyword">while</span> (par[x] != goal) {
+        <span class="hljs-keyword">int</span> y = par[x], z = par[y];
+        <span class="hljs-keyword">if</span> (z != goal) {
+            <span class="hljs-keyword">if</span> (chk(x) == chk(y)) rotate(y);
+            <span class="hljs-keyword">else</span> rotate(x);
+        }
+        rotate(x);
+    }
+    <span class="hljs-keyword">if</span> (!goal) root = x;
+}</code></pre>
+<h2>find操作</h2>
+<p>辅助操作，将最大的小于等于 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.43056em;"></span><span class="strut bottom" style="height: 0.43056em; vertical-align: 0em;"></span><span class="base"><span class="mord mathit">x</span></span></span></span></span> 的数所在的节点splay到根。</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">find</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">if</span> (!root) <span class="hljs-keyword">return</span>;
+    <span class="hljs-keyword">int</span> cur = root;
+    <span class="hljs-keyword">while</span> (ch[cur][x &gt; val[cur]] &amp;&amp; x != val[cur]) {
+        cur = ch[cur][x &gt; val[cur]];
+    }
+    splay(cur);
+}</code></pre>
+<h2>插入(insert)</h2>
+<p>从根节点开始，一路搜索下去。如果节点存在则直接自增cnt的值。否则新建节点并与父节点连边。</p>
+<p>因为新建节点时可能会拉出一条链，所以新建节点后需要将该节点splay到根节点。沿途的rotate操作可以使平衡树恢复平衡。</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">insert</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> cur = root, p = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (cur &amp;&amp; val[cur] != x) {
+        p = cur;
+        cur = ch[cur][x &gt; val[cur]];
+    }
+    <span class="hljs-keyword">if</span> (cur) {
+        cnt[cur]++;
+    } <span class="hljs-keyword">else</span> {
+        cur = ++ncnt;
+        <span class="hljs-keyword">if</span> (p) ch[p][x &gt; val[p]] = cur;
+        ch[cur][<span class="hljs-number">0</span>] = ch[cur][<span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;
+        val[cur] = x; par[cur] = p;
+        cnt[cur] = size[cur] = <span class="hljs-number">1</span>;
+    }
+    splay(cur);
+}</code></pre>
+<h2>查询k大(kth)</h2>
+<p>从根节点开始，一路搜索下去。每次判断要走向哪个子树。注意考虑重复权值。</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">kth</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k)</span> </span>{
+    <span class="hljs-keyword">int</span> cur = root;
+    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) {
+        <span class="hljs-keyword">if</span> (ch[cur][<span class="hljs-number">0</span>] &amp;&amp; k &lt;= size[ch[cur][<span class="hljs-number">0</span>]]) {
+            cur = ch[cur][<span class="hljs-number">0</span>];
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (k &gt; size[ch[cur][<span class="hljs-number">0</span>]] + cnt[cur]) {
+            k -= size[ch[cur][<span class="hljs-number">0</span>]] + cnt[cur];
+            cur = ch[cur][<span class="hljs-number">1</span>];
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> cur;
+        }
+    }
+}</code></pre>
+<h2>查询rank(rank)</h2>
+<p>并不需要专门写操作。将该节点find到根后返回左子树的权值数即可。</p>
+<pre><code class="language-cpp hljs">find(x);
+<span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, size[ch[root][<span class="hljs-number">0</span>]]);</code></pre>
+<h2>前驱(pre)</h2>
+<p>将该节点find到根后返回左子树最右边的节点即可。</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">pre</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    find(x);
+    <span class="hljs-keyword">if</span> (val[root] &lt; x) <span class="hljs-keyword">return</span> root;
+    <span class="hljs-keyword">int</span> cur = ch[root][<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">while</span> (ch[cur][<span class="hljs-number">1</span>]) {
+        cur = ch[cur][<span class="hljs-number">1</span>];
+    }
+    <span class="hljs-keyword">return</span> cur;
+}</code></pre>
+<h2>后继(succ)</h2>
+<p>同理，返回右子树最左边的节点即可。</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">succ</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    find(x);
+    <span class="hljs-keyword">if</span> (val[root] &gt; x) <span class="hljs-keyword">return</span> root;
+    <span class="hljs-keyword">int</span> cur = ch[root][<span class="hljs-number">1</span>];
+    <span class="hljs-keyword">while</span> (ch[cur][<span class="hljs-number">0</span>]) {
+        cur = ch[cur][<span class="hljs-number">0</span>];
+    }
+    <span class="hljs-keyword">return</span> cur;
+}</code></pre>
+<h2>删除(remove)</h2>
+<p>显然，任何一个数的前驱和后继之间只有它自身。</p>
+<p>令该点的前驱为 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>l</mi><mi>a</mi><mi>s</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">last</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.69444em;"></span><span class="strut bottom" style="height: 0.69444em; vertical-align: 0em;"></span><span class="base"><span class="mord mathit" style="margin-right: 0.01968em;">l</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">t</span></span></span></span></span> ，后继为 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi><mi>e</mi><mi>x</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">next</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.61508em;"></span><span class="strut bottom" style="height: 0.61508em; vertical-align: 0em;"></span><span class="base"><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">x</span><span class="mord mathit">t</span></span></span></span></span> 。</p>
+<p>那么可以考虑把前驱splay到根，后继splay到前驱的右儿子，那么后继的左儿子就是要删除的点。</p>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/remove.svg" alt=""></p>
+<p>最后判特判权值数大于 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.64444em; vertical-align: 0em;"></span><span class="base"><span class="mord">1</span></span></span></span></span> 的情况即可。</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">remove</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> last = pre(x), next = succ(x);
+    splay(last); splay(next, last);
+    <span class="hljs-keyword">int</span> del = ch[next][<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">if</span> (cnt[del] &gt; <span class="hljs-number">1</span>) {
+        cnt[del]--;
+        splay(del);
+    }
+    <span class="hljs-keyword">else</span> ch[next][<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;
+}</code></pre>
+<h2>区间反转</h2>
+<p>考虑线段树维护区间标记的方法，将其移植到Splay即可。</p>
+<p>打标记时，将 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>l</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">l-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.69444em;"></span><span class="strut bottom" style="height: 0.77777em; vertical-align: -0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right: 0.01968em;">l</span><span class="mord rule" style="margin-right: 0.222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right: 0.222222em;"></span><span class="mord">1</span></span></span></span></span> 和 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>r</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">r+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.72777em; vertical-align: -0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right: 0.02778em;">r</span><span class="mord rule" style="margin-right: 0.222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right: 0.222222em;"></span><span class="mord">1</span></span></span></span></span> 分别旋转到根节点和根节点右儿子处，那么 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>r</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">r+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.64444em;"></span><span class="strut bottom" style="height: 0.72777em; vertical-align: -0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right: 0.02778em;">r</span><span class="mord rule" style="margin-right: 0.222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right: 0.222222em;"></span><span class="mord">1</span></span></span></span></span> 的左子树即是区间 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>[</mo><mi>l</mi><mo separator="true">,</mo><mi>r</mi><mo>]</mo></mrow><annotation encoding="application/x-tex">[l,r]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.75em;"></span><span class="strut bottom" style="height: 1em; vertical-align: -0.25em;"></span><span class="base"><span class="mopen">[</span><span class="mord mathit" style="margin-right: 0.01968em;">l</span><span class="mpunct">,</span><span class="mord rule" style="margin-right: 0.166667em;"></span><span class="mord mathit" style="margin-right: 0.02778em;">r</span><span class="mclose">]</span></span></span></span></span> 。在其根处打上标记然后在查询 <span><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.69444em;"></span><span class="strut bottom" style="height: 0.69444em; vertical-align: 0em;"></span><span class="base"><span class="mord mathit" style="margin-right: 0.03148em;">k</span></span></span></span></span> 大和输出中序遍历时下传标记即可。</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">pushdown</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">if</span> (rev[x])  {
+        swap(ch[x][<span class="hljs-number">0</span>], ch[x][<span class="hljs-number">1</span>]);
+        rev[ch[x][<span class="hljs-number">0</span>]] ^= <span class="hljs-number">1</span>;
+        rev[ch[x][<span class="hljs-number">1</span>]] ^= <span class="hljs-number">1</span>;
+        rev[x] = <span class="hljs-number">0</span>;
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">kth</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k)</span> </span>{
+    <span class="hljs-keyword">int</span> cur = root;
+    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) {
+        pushdown(cur);
+        <span class="hljs-keyword">if</span> (ch[cur][<span class="hljs-number">0</span>] &amp;&amp; k &lt;= size[ch[cur][<span class="hljs-number">0</span>]]) {
+            cur = ch[cur][<span class="hljs-number">0</span>];
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (k &gt; size[ch[cur][<span class="hljs-number">0</span>]] + cnt[cur]) {
+            k -= size[ch[cur][<span class="hljs-number">0</span>]] + cnt[cur];
+            cur = ch[cur][<span class="hljs-number">1</span>];
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> cur;
+        }
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">reverse</span><span class="hljs-params">(<span class="hljs-keyword">int</span> l, <span class="hljs-keyword">int</span> r)</span> </span>{
+    <span class="hljs-keyword">int</span> x = kth(l), y = kth(r+<span class="hljs-number">2</span>);
+    splay(x); splay(y, x);
+    rev[ch[y][<span class="hljs-number">0</span>]] ^= <span class="hljs-number">1</span>;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">output</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    pushdown(x);
+    <span class="hljs-keyword">if</span> (ch[x][<span class="hljs-number">0</span>]) output(ch[x][<span class="hljs-number">0</span>]);
+    <span class="hljs-keyword">if</span> (val[x] &amp;&amp; val[x] &lt;= n) <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d "</span>, val[x]);
+    <span class="hljs-keyword">if</span> (ch[x][<span class="hljs-number">1</span>]) output(ch[x][<span class="hljs-number">1</span>]);
+}</code></pre>
+<blockquote>
+<p>// 这张图有点小</p>
+</blockquote>
+<p><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/reverse.svg" alt=""></p>
+<h2>区间打标记</h2>
+<p>平衡树像线段树一样，可以打标记。但是有一个不同点，就是<strong>平衡树的每个节点都有权值</strong>。所以更新标记时和线段树不一样，要考虑自身节点的权值。</p>
+<p>因为Splay可以直接提取指定区间，所以Splay的区间操作在某些意义上<del>比线段树还好写</del>。</p>
+<h1>例题 <a href="https://www.luogu.org/problemnew/show/P2042">P2042 维护数列</a></h1>
+<p>策爷：“splay/块状链表的自虐题。”</p>
+<p>看到插入、删除、反转就很容易想到<del>fhq-treap</del>Splay。</p>
+<h2>简化版问题</h2>
+<p>如果只考虑修改、求和、求最大子段和，就可以直接用线段树解决。</p>
+<p>考虑维护<code>la[N]</code>、<code>ra[N]</code>、<code>gss[N]</code>、<code>sum[N]</code>、<code>upd[N]</code>，分别代表最大前缀和、最大后缀和、最大子段和、区间和和修改标记。</p>
+<p>初始化<code>la</code>、<code>ra</code>时，在选与不选之间取max即可。<code>gss</code>则初始化为叶子的值即可。</p>
+<p><code>la[x] = ra[x] = max(0, sum[x]); gss[x] = sum[x];</code></p>
+<p>考虑如何维护<code>la</code>、<code>ra</code>、<code>gss</code>和<code>sum</code>。</p>
+<pre><code class="language-cpp hljs">la[x] = max(la[l], sum[l] + la[r]);
+ra[x] = max(ra[r], sum[r] + ra[l]);
+gss[x] = max(ra[l] + la[r], max(gss[l], gss[r]));
+sum[x] = sum[l] + sum[r];</code></pre>
+<p>再考虑如何维护<code>upd</code>。</p>
+<p><code>upd</code>的存储方式其实有两种：一种是把需要更新的值存储起来，另一种是修改时直接更新完毕，然后再打上bool标记。这里我采用的是后者。</p>
+<p>下传也简单。将整个区间set成同一个值后，<code>la</code>、<code>ra</code>和<code>gss</code>的更新与初始化<em>有些相似</em>。</p>
+<p><code>la</code>和<code>ra</code>的代码不变，<code>gss</code>改成<strong>在选全部与选一个之间取max</strong>(题目要求必须选一个)。</p>
+<p>没了？当然还有。</p>
+<h2>完整版问题</h2>
+<p>现在多了插入、删除和区间反转，维护方法相似。这里我们先考虑<strong>每个点都有权值</strong>后的变化。</p>
+<pre><code class="language-cpp hljs">la[x] = max(la[l], sum[l] + (val[x]) + la[r]);
+ra[x] = max(ra[r], sum[r] + (val[x]) + ra[l]);
+gss[x] = max(ra[l] + (val[x]) + la[r], max(gss[l], gss[r]));
+sum[x] = sum[l] + (val[x]) + sum[r];</code></pre>
+<p>其中用括号括起来的是增加的部分。</p>
+<p>考虑同时下传反转和set两个标记。如果区间全部设置为一个值，反转也就没有意义了。所以处理顺序是set→反转。</p>
+<p>pushdown的完整代码如下：</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">pushdown</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> l = ch[x][<span class="hljs-number">0</span>], r = ch[x][<span class="hljs-number">1</span>];
+    <span class="hljs-keyword">if</span> (upd[x]) {
+        upd[x] = rev[x] = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">if</span> (l) {
+            upd[l] = <span class="hljs-number">1</span>; val[l] = val[x];
+            sum[l] = val[x] * size[l];
+            la[l] = ra[l] = max(sum[l], <span class="hljs-number">0</span>);
+            gss[l] = val[x] &lt; <span class="hljs-number">0</span> ? val[x] : sum[l];
+        }
+        <span class="hljs-keyword">if</span> (r) {
+            upd[r] = <span class="hljs-number">1</span>; val[r] = val[x];
+            sum[r] = val[x] * size[r];
+            la[r] = ra[r] = max(sum[r], <span class="hljs-number">0</span>);
+            gss[r] = val[x] &lt; <span class="hljs-number">0</span> ? val[x] : sum[r];
+        }
+    }
+    <span class="hljs-keyword">if</span> (rev[x]) {
+        rev[l] ^= <span class="hljs-number">1</span>; rev[r] ^= <span class="hljs-number">1</span>; rev[x] = <span class="hljs-number">0</span>;
+        swap(la[l], ra[l]); swap(la[r], ra[r]);
+        swap(ch[l][<span class="hljs-number">0</span>], ch[l][<span class="hljs-number">1</span>]);
+        swap(ch[r][<span class="hljs-number">0</span>], ch[r][<span class="hljs-number">1</span>]);
+    }
+}</code></pre>
+<h2>垃圾回收</h2>
+<p>这个毒瘤题非常恶心，卡我空间，只好写个<del>辣鸡</del>垃圾回收。</p>
+<p>删除的时候，把要删除的节点全部加到一个队列里。等到要插入的时候，优先使用队列里的点。</p>
+<p>代码很好理解。</p>
+<pre><code class="language-cpp hljs"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">recycle</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">if</span> (ch[x][<span class="hljs-number">0</span>]) recycle(ch[x][<span class="hljs-number">0</span>]);
+    <span class="hljs-keyword">if</span> (ch[x][<span class="hljs-number">1</span>]) recycle(ch[x][<span class="hljs-number">1</span>]);
+    q.push(x);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">newNode</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> cur;
+    <span class="hljs-keyword">if</span> (q.empty()) cur = ++ncnt;
+    <span class="hljs-keyword">else</span> cur = q.front(), q.pop();
+    ch[cur][<span class="hljs-number">0</span>] = ch[cur][<span class="hljs-number">1</span>] = par[cur] = <span class="hljs-number">0</span>;
+    val[cur] = sum[cur] = gss[cur] = x;
+    la[cur] = ra[cur] = max(<span class="hljs-number">0</span>, x);
+    upd[cur] = rev[cur] = <span class="hljs-number">0</span>;
+    size[cur] = <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">return</span> cur;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">build</span><span class="hljs-params">(<span class="hljs-keyword">int</span> l, <span class="hljs-keyword">int</span> r, <span class="hljs-keyword">int</span> *arr)</span> </span>{
+    <span class="hljs-keyword">if</span> (l &gt; r) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> mid = (l+r)&gt;&gt;<span class="hljs-number">1</span>, cur = newNode(arr[mid]);
+    <span class="hljs-keyword">if</span> (l == r) <span class="hljs-keyword">return</span> cur;
+    <span class="hljs-keyword">if</span> ((ch[cur][<span class="hljs-number">0</span>] = build(l, mid<span class="hljs-number">-1</span>, arr))) par[ch[cur][<span class="hljs-number">0</span>]] = cur;
+    <span class="hljs-keyword">if</span> ((ch[cur][<span class="hljs-number">1</span>] = build(mid+<span class="hljs-number">1</span>, r, arr))) par[ch[cur][<span class="hljs-number">1</span>]] = cur;
+    pushup(cur);
+    <span class="hljs-keyword">return</span> cur;
+}</code></pre>
+<h1>其他用途</h1>
+<p>Splay因为其超强的区间操作能力，所以也作为LCT的辅助树使用。</p>
+<p>Splay也可以搭配<del>仙人掌剖分</del><strong>树链剖分</strong>，把一些序列上的题目出到<del>仙人掌</del><strong>树</strong>上。</p>
+<p><del><img src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/5b69203423c82.png" alt="cactus.png"></del></p>
+<h1>代码</h1>
+<p>下面附上我那常数巨大的代码，供参考用：</p>
+<h2>普通平衡树</h2>
+<pre><code class="language-cpp hljs"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N = <span class="hljs-number">200005</span>;
+
+<span class="hljs-keyword">int</span> ch[N][<span class="hljs-number">2</span>], par[N], val[N], cnt[N], size[N], ncnt, root;
+
+<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">chk</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">return</span> ch[par[x]][<span class="hljs-number">1</span>] == x;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">pushup</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    size[x] = size[ch[x][<span class="hljs-number">0</span>]] + size[ch[x][<span class="hljs-number">1</span>]] + cnt[x];
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">rotate</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> y = par[x], z = par[y], k = chk(x), w = ch[x][k^<span class="hljs-number">1</span>];
+    ch[y][k] = w; par[w] = y;
+    ch[z][chk(y)] = x; par[x] = z;
+    ch[x][k^<span class="hljs-number">1</span>] = y; par[y] = x;
+    pushup(y); pushup(x);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">splay</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> goal = <span class="hljs-number">0</span>)</span> </span>{
+    <span class="hljs-keyword">while</span> (par[x] != goal) {
+        <span class="hljs-keyword">int</span> y = par[x], z = par[y];
+        <span class="hljs-keyword">if</span> (z != goal) {
+            <span class="hljs-keyword">if</span> (chk(x) == chk(y)) rotate(y);
+            <span class="hljs-keyword">else</span> rotate(x);
+        }
+        rotate(x);
+    }
+    <span class="hljs-keyword">if</span> (!goal) root = x;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">insert</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> cur = root, p = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (cur &amp;&amp; val[cur] != x) {
+        p = cur;
+        cur = ch[cur][x &gt; val[cur]];
+    }
+    <span class="hljs-keyword">if</span> (cur) {
+        cnt[cur]++;
+    } <span class="hljs-keyword">else</span> {
+        cur = ++ncnt;
+        <span class="hljs-keyword">if</span> (p) ch[p][x &gt; val[p]] = cur;
+        ch[cur][<span class="hljs-number">0</span>] = ch[cur][<span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;
+        par[cur] = p; val[cur] = x;
+        cnt[cur] = size[cur] = <span class="hljs-number">1</span>;
+    }
+    splay(cur);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">find</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> cur = root;
+    <span class="hljs-keyword">while</span> (ch[cur][x &gt; val[cur]] &amp;&amp; x != val[cur]) {
+        cur = ch[cur][x &gt; val[cur]];
+    }
+    splay(cur);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">kth</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k)</span> </span>{
+    <span class="hljs-keyword">int</span> cur = root;
+    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) {
+        <span class="hljs-keyword">if</span> (ch[cur][<span class="hljs-number">0</span>] &amp;&amp; k &lt;= size[ch[cur][<span class="hljs-number">0</span>]]) {
+            cur = ch[cur][<span class="hljs-number">0</span>];
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (k &gt; size[ch[cur][<span class="hljs-number">0</span>]] + cnt[cur]) {
+            k -= size[ch[cur][<span class="hljs-number">0</span>]] + cnt[cur];
+            cur = ch[cur][<span class="hljs-number">1</span>];
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> cur;
+        }
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">pre</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    find(x);
+    <span class="hljs-keyword">if</span> (val[root] &lt; x) <span class="hljs-keyword">return</span> root;
+    <span class="hljs-keyword">int</span> cur = ch[root][<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">while</span> (ch[cur][<span class="hljs-number">1</span>]) cur = ch[cur][<span class="hljs-number">1</span>];
+    <span class="hljs-keyword">return</span> cur;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">succ</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    find(x);
+    <span class="hljs-keyword">if</span> (val[root] &gt; x) <span class="hljs-keyword">return</span> root;
+    <span class="hljs-keyword">int</span> cur = ch[root][<span class="hljs-number">1</span>];
+    <span class="hljs-keyword">while</span> (ch[cur][<span class="hljs-number">0</span>]) cur = ch[cur][<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">return</span> cur;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">remove</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> last = pre(x), next = succ(x);
+    splay(last); splay(next, last);
+    <span class="hljs-keyword">int</span> del = ch[next][<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">if</span> (cnt[del] &gt; <span class="hljs-number">1</span>) {
+        cnt[del]--;
+        splay(del);
+    }
+    <span class="hljs-keyword">else</span> ch[next][<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-keyword">int</span> n, op, x;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d"</span>, &amp;n);
+    insert(<span class="hljs-number">0x3f3f3f3f</span>);
+    insert(<span class="hljs-number">0xcfcfcfcf</span>);
+    <span class="hljs-keyword">while</span> (n--) {
+        <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d%d"</span>, &amp;op, &amp;x);
+        <span class="hljs-keyword">switch</span> (op) {
+            <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>: insert(x); <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>: remove(x); <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>: find(x); <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, size[ch[root][<span class="hljs-number">0</span>]]); <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">4</span>: <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, val[kth(x+<span class="hljs-number">1</span>)]); <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">5</span>: <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, val[pre(x)]); <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">6</span>: <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, val[succ(x)]); <span class="hljs-keyword">break</span>;
+        }
+    }
+}</code></pre>
+<h2>文艺平衡树</h2>
+<pre><code class="language-cpp hljs"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N = <span class="hljs-number">100005</span>;
+
+<span class="hljs-keyword">int</span> ch[N][<span class="hljs-number">2</span>], par[N], val[N], cnt[N], size[N], rev[N], root, ncnt;
+<span class="hljs-keyword">int</span> n, m, x, y;
+
+<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">chk</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">return</span> ch[par[x]][<span class="hljs-number">1</span>] == x;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">pushup</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    size[x] = size[ch[x][<span class="hljs-number">0</span>]] + size[ch[x][<span class="hljs-number">1</span>]] + cnt[x];
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">pushdown</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">if</span> (rev[x])  {
+        swap(ch[x][<span class="hljs-number">0</span>], ch[x][<span class="hljs-number">1</span>]);
+        rev[ch[x][<span class="hljs-number">0</span>]] ^= <span class="hljs-number">1</span>;
+        rev[ch[x][<span class="hljs-number">1</span>]] ^= <span class="hljs-number">1</span>;
+        rev[x] = <span class="hljs-number">0</span>;
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">rotate</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> y = par[x], z = par[y], k = chk(x), w = ch[x][k^<span class="hljs-number">1</span>];
+    ch[y][k] = w; par[w] = y;
+    ch[z][chk(y)] = x; par[x] = z;
+    ch[x][k^<span class="hljs-number">1</span>] = y; par[y] = x;
+    pushup(y); pushup(x); 
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">splay</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> goal = <span class="hljs-number">0</span>)</span> </span>{
+    <span class="hljs-keyword">while</span> (par[x] != goal) {
+        <span class="hljs-keyword">int</span> y = par[x], z = par[y];
+        <span class="hljs-keyword">if</span> (z != goal) {
+            <span class="hljs-keyword">if</span> (chk(x) == chk(y)) rotate(y);
+            <span class="hljs-keyword">else</span> rotate(x);
+        }
+        rotate(x);
+    }
+    <span class="hljs-keyword">if</span> (!goal) root = x;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">insert</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> cur = root, p = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (cur &amp;&amp; val[cur] != x) {
+        p = cur;
+        cur = ch[cur][x &gt; val[cur]];
+    }
+    <span class="hljs-keyword">if</span> (cur) {
+        cnt[cur]++;
+    } <span class="hljs-keyword">else</span> {
+        cur = ++ncnt;
+        <span class="hljs-keyword">if</span> (p) ch[p][x &gt; val[p]] = cur;
+        ch[cur][<span class="hljs-number">0</span>] = ch[cur][<span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;
+        par[cur] = p; val[cur] = x;
+        cnt[cur] = size[cur] = <span class="hljs-number">1</span>;
+    }
+    splay(cur);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">find</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> cur = root;
+    <span class="hljs-keyword">while</span> (ch[cur][x &gt; val[cur]] &amp;&amp; val[cur] != x) {
+        cur = ch[cur][x &gt; val[cur]];
+    }
+    splay(cur);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">kth</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k)</span> </span>{
+    <span class="hljs-keyword">int</span> cur = root;
+    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) {
+        pushdown(cur);
+        <span class="hljs-keyword">if</span> (ch[cur][<span class="hljs-number">0</span>] &amp;&amp; k &lt;= size[ch[cur][<span class="hljs-number">0</span>]]) {
+            cur = ch[cur][<span class="hljs-number">0</span>];
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (k &gt; size[ch[cur][<span class="hljs-number">0</span>]] + cnt[cur]) {
+            k -= size[ch[cur][<span class="hljs-number">0</span>]] + cnt[cur];
+            cur = ch[cur][<span class="hljs-number">1</span>];
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> cur;
+        }
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">reverse</span><span class="hljs-params">(<span class="hljs-keyword">int</span> l, <span class="hljs-keyword">int</span> r)</span> </span>{
+    <span class="hljs-keyword">int</span> x = kth(l), y = kth(r+<span class="hljs-number">2</span>);
+    splay(x); splay(y, x);
+    rev[ch[y][<span class="hljs-number">0</span>]] ^= <span class="hljs-number">1</span>;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">pre</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    find(x);
+    <span class="hljs-keyword">if</span> (val[root] &lt; x) <span class="hljs-keyword">return</span> root;
+    <span class="hljs-keyword">int</span> cur = ch[root][<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">while</span> (ch[cur][<span class="hljs-number">1</span>]) cur = ch[cur][<span class="hljs-number">1</span>];
+    <span class="hljs-keyword">return</span> cur;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">succ</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    find(x);
+    <span class="hljs-keyword">if</span> (val[root] &gt; x) <span class="hljs-keyword">return</span> root;
+    <span class="hljs-keyword">int</span> cur = ch[root][<span class="hljs-number">1</span>];
+    <span class="hljs-keyword">while</span> (ch[cur][<span class="hljs-number">0</span>]) cur = ch[cur][<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">return</span> cur;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">output</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    pushdown(x);
+    <span class="hljs-keyword">if</span> (ch[x][<span class="hljs-number">0</span>]) output(ch[x][<span class="hljs-number">0</span>]);
+    <span class="hljs-keyword">if</span> (val[x] &amp;&amp; val[x] &lt;= n) <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d "</span>, val[x]);
+    <span class="hljs-keyword">if</span> (ch[x][<span class="hljs-number">1</span>]) output(ch[x][<span class="hljs-number">1</span>]);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d%d"</span>, &amp;n, &amp;m);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt;= n+<span class="hljs-number">1</span>; i++) insert(i);
+    <span class="hljs-keyword">while</span> (m--) {
+        <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d%d"</span>, &amp;x, &amp;y);
+        reverse(x, y);
+    }
+    output(root);
+}</code></pre>
+<h2>P2042</h2>
+<pre><code class="language-cpp hljs"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N = <span class="hljs-number">1000016</span>;
+
+<span class="hljs-keyword">int</span> size[N], sum[N], upd[N], rev[N], la[N], ra[N], gss[N];
+<span class="hljs-keyword">int</span> val[N], ch[N][<span class="hljs-number">2</span>], par[N], ncnt, root;
+<span class="hljs-built_in">queue</span>&lt;<span class="hljs-keyword">int</span>&gt; q;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">recycle</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">if</span> (ch[x][<span class="hljs-number">0</span>]) recycle(ch[x][<span class="hljs-number">0</span>]);
+    <span class="hljs-keyword">if</span> (ch[x][<span class="hljs-number">1</span>]) recycle(ch[x][<span class="hljs-number">1</span>]);
+    q.push(x);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">int</span> <span class="hljs-title">newNode</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> cur;
+    <span class="hljs-keyword">if</span> (q.empty()) cur = ++ncnt;
+    <span class="hljs-keyword">else</span> cur = q.front(), q.pop();
+    ch[cur][<span class="hljs-number">0</span>] = ch[cur][<span class="hljs-number">1</span>] = par[cur] = <span class="hljs-number">0</span>;
+    val[cur] = sum[cur] = gss[cur] = x;
+    la[cur] = ra[cur] = max(<span class="hljs-number">0</span>, x);
+    upd[cur] = rev[cur] = <span class="hljs-number">0</span>;
+    size[cur] = <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">return</span> cur;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">bool</span> <span class="hljs-title">chk</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">return</span> ch[par[x]][<span class="hljs-number">1</span>] == x;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pushup</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> l = ch[x][<span class="hljs-number">0</span>], r = ch[x][<span class="hljs-number">1</span>];
+    size[x] = size[l] + size[r] + <span class="hljs-number">1</span>;
+    sum[x] = sum[l] + sum[r] + val[x];
+    <span class="hljs-comment">// 这里和线段树不同，线段树只有叶子上有权值，平衡树上所有点都有，必须+val[x] </span>
+    la[x] = max(la[l], sum[l] + val[x] + la[r]);
+    ra[x] = max(ra[r], sum[r] + val[x] + ra[l]);
+    gss[x] = max(ra[l] + val[x] + la[r], max(gss[l], gss[r]));
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">rotate</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> y = par[x], z = par[y], k = chk(x), w = ch[x][k^<span class="hljs-number">1</span>];
+    ch[y][k] = w; par[w] = y;
+    ch[z][chk(y)] = x; par[x] = z;
+    ch[x][k^<span class="hljs-number">1</span>] = y; par[y] = x;
+    pushup(y); pushup(x);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pushdown</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{
+    <span class="hljs-keyword">int</span> l = ch[x][<span class="hljs-number">0</span>], r = ch[x][<span class="hljs-number">1</span>];
+    <span class="hljs-keyword">if</span> (upd[x]) {
+        upd[x] = rev[x] = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">if</span> (l) {
+            upd[l] = <span class="hljs-number">1</span>; val[l] = val[x];
+            sum[l] = val[x] * size[l];
+            la[l] = ra[l] = max(sum[l], <span class="hljs-number">0</span>);
+            gss[l] = val[x] &lt; <span class="hljs-number">0</span> ? val[x] : sum[l];
+        }
+        <span class="hljs-keyword">if</span> (r) {
+            upd[r] = <span class="hljs-number">1</span>; val[r] = val[x];
+            sum[r] = val[x] * size[r];
+            la[r] = ra[r] = max(sum[r], <span class="hljs-number">0</span>);
+            gss[r] = val[x] &lt; <span class="hljs-number">0</span> ? val[x] : sum[r];
+        }
+    }
+    <span class="hljs-keyword">if</span> (rev[x]) {
+        rev[l] ^= <span class="hljs-number">1</span>; rev[r] ^= <span class="hljs-number">1</span>; rev[x] = <span class="hljs-number">0</span>;
+        swap(la[l], ra[l]); swap(la[r], ra[r]);
+        swap(ch[l][<span class="hljs-number">0</span>], ch[l][<span class="hljs-number">1</span>]);
+        swap(ch[r][<span class="hljs-number">0</span>], ch[r][<span class="hljs-number">1</span>]);
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">splay</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> goal = <span class="hljs-number">0</span>)</span> </span>{
+    <span class="hljs-keyword">while</span> (par[x] != goal) {
+        <span class="hljs-keyword">int</span> y = par[x], z = par[y];
+        <span class="hljs-keyword">if</span> (z != goal) {
+            <span class="hljs-keyword">if</span> (chk(x) == chk(y)) rotate(y);
+            <span class="hljs-keyword">else</span> rotate(x);
+        }
+        rotate(x);
+    }
+    <span class="hljs-keyword">if</span> (!goal) root = x;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">build</span><span class="hljs-params">(<span class="hljs-keyword">int</span> l, <span class="hljs-keyword">int</span> r, <span class="hljs-keyword">int</span> *arr)</span> </span>{
+    <span class="hljs-keyword">if</span> (l &gt; r) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> mid = (l+r)&gt;&gt;<span class="hljs-number">1</span>, cur = newNode(arr[mid]);
+    <span class="hljs-keyword">if</span> (l == r) <span class="hljs-keyword">return</span> cur;
+    <span class="hljs-keyword">if</span> ((ch[cur][<span class="hljs-number">0</span>] = build(l, mid<span class="hljs-number">-1</span>, arr))) par[ch[cur][<span class="hljs-number">0</span>]] = cur;
+    <span class="hljs-keyword">if</span> ((ch[cur][<span class="hljs-number">1</span>] = build(mid+<span class="hljs-number">1</span>, r, arr))) par[ch[cur][<span class="hljs-number">1</span>]] = cur;
+    pushup(cur);
+    <span class="hljs-keyword">return</span> cur;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">int</span> <span class="hljs-title">kth</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k)</span> </span>{
+    <span class="hljs-keyword">int</span> cur = root;
+    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) {
+        pushdown(cur);
+        <span class="hljs-keyword">if</span> (ch[cur][<span class="hljs-number">0</span>] &amp;&amp; k &lt;= size[ch[cur][<span class="hljs-number">0</span>]]) {
+            cur = ch[cur][<span class="hljs-number">0</span>];
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (k &gt; size[ch[cur][<span class="hljs-number">0</span>]] + <span class="hljs-number">1</span>) {
+            k -= size[ch[cur][<span class="hljs-number">0</span>]] + <span class="hljs-number">1</span>;
+            cur = ch[cur][<span class="hljs-number">1</span>];
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> cur;
+        }
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">insert</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y)</span> </span>{
+    <span class="hljs-keyword">int</span> u = kth(x+<span class="hljs-number">1</span>), v = kth(x+<span class="hljs-number">2</span>);
+    splay(u); splay(v, u);
+    ch[v][<span class="hljs-number">0</span>] = y; par[y] = v;
+    pushup(v); pushup(u); 
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">int</span> <span class="hljs-title">qsum</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y)</span> </span>{
+    <span class="hljs-keyword">int</span> u = kth(x), v = kth(x+y+<span class="hljs-number">1</span>);
+    splay(u); splay(v, u);
+    <span class="hljs-keyword">return</span> sum[ch[v][<span class="hljs-number">0</span>]];
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">int</span> <span class="hljs-title">qgss</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> gss[root];
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">remove</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y)</span> </span>{
+    <span class="hljs-keyword">int</span> u = kth(x), v = kth(x+y+<span class="hljs-number">1</span>);
+    splay(u); splay(v, u);
+    recycle(ch[v][<span class="hljs-number">0</span>]);
+    ch[v][<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;
+    pushup(v); pushup(u);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">reverse</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y)</span> </span>{
+    <span class="hljs-keyword">int</span> u = kth(x), v = kth(x+y+<span class="hljs-number">1</span>);
+    splay(u); splay(v, u);
+    <span class="hljs-keyword">int</span> w = ch[v][<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">if</span> (!upd[w]) {
+        rev[w] ^= <span class="hljs-number">1</span>;
+        swap(ch[w][<span class="hljs-number">0</span>], ch[w][<span class="hljs-number">1</span>]);
+        swap(la[w], ra[w]);
+        pushup(v); pushup(u);
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y, <span class="hljs-keyword">int</span> z)</span> </span>{
+    <span class="hljs-keyword">int</span> u = kth(x), v = kth(x+y+<span class="hljs-number">1</span>);
+    splay(u); splay(v, u);
+    <span class="hljs-keyword">int</span> w = ch[v][<span class="hljs-number">0</span>];
+    upd[w] = <span class="hljs-number">1</span>; val[w] = z; sum[w] = size[w] * z;
+    la[w] = ra[w] = max(<span class="hljs-number">0</span>, sum[w]);
+    gss[w] = z &lt; <span class="hljs-number">0</span> ? z : sum[w];
+    pushup(v); pushup(u);
+}
+
+<span class="hljs-keyword">int</span> n, m, arr[N], c, x, y, z;
+<span class="hljs-keyword">char</span> buf[<span class="hljs-number">32</span>];
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-comment">// freopen("I:\\OI\\Y\\0803\\5.in", "r", stdin);</span>
+    <span class="hljs-comment">// freopen("I:\\OI\\Y\\0803\\5s.out", "w", stdout);</span>
+    <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d%d"</span>, &amp;n, &amp;m);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">2</span>; i &lt;= n+<span class="hljs-number">1</span>; i++) {
+        <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d"</span>, arr+i);
+    }
+    gss[<span class="hljs-number">0</span>] = val[<span class="hljs-number">0</span>] = <span class="hljs-number">0xcfcfcfcf</span>;
+    arr[<span class="hljs-number">1</span>] = arr[n += <span class="hljs-number">2</span>] = <span class="hljs-number">0xcfcfcfcf</span>;
+    build(<span class="hljs-number">1</span>, n, arr); root = <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">while</span> (m--) {
+<span class="hljs-comment">//        debug();</span>
+        <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%s"</span>, buf);
+        <span class="hljs-keyword">switch</span> ((buf[<span class="hljs-number">2</span>] + buf[<span class="hljs-number">1</span>]) ^ *buf) {
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'G'</span>^(<span class="hljs-string">'E'</span>+<span class="hljs-string">'T'</span>):
+                <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d%d"</span>, &amp;x, &amp;y);
+                <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, qsum(x, y));
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'M'</span>^(<span class="hljs-string">'A'</span>+<span class="hljs-string">'X'</span>):
+                <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, qgss());
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'R'</span>^(<span class="hljs-string">'E'</span>+<span class="hljs-string">'V'</span>):
+                <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d%d"</span>, &amp;x, &amp;y);
+                reverse(x, y);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'M'</span>^(<span class="hljs-string">'A'</span>+<span class="hljs-string">'K'</span>):
+                <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d%d%d"</span>, &amp;x, &amp;y, &amp;z);
+                update(x, y, z);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'D'</span>^(<span class="hljs-string">'E'</span>+<span class="hljs-string">'L'</span>):
+                <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d%d"</span>, &amp;x, &amp;y);
+                remove(x, y);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'I'</span>^(<span class="hljs-string">'N'</span>+<span class="hljs-string">'S'</span>):
+                <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d%d"</span>, &amp;x, &amp;y);
+                <span class="hljs-built_in">memset</span>(arr, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span> arr);
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= y; i++) {
+                    <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d"</span>, arr+i);
+                }
+                insert(x, build(<span class="hljs-number">1</span>, y, arr));
+                <span class="hljs-keyword">break</span>;
+        }
+    }
+}</code></pre>
+<h1><strong>↓↓↓↓↓下面的都是dalao↓↓↓↓↓</strong></h1>
+</div>
+<hr>
+<div id="article-vote"><div><button type="button" class="btn btn-outline-primary"><i aria-hidden="true" class="fa fa-thumbs-up"></i></button> <button type="button" class="btn btn-outline-secondary"><i aria-hidden="true" class="fa fa-thumbs-down"></i></button></div></div>
+<hr>
+<div data-v-4374f9ca="" id="article-comments"><div data-v-4374f9ca="" class="form-group"><label data-v-4374f9ca="" for="comment-textArea">回复文章</label> <textarea data-v-4374f9ca="" id="comment-textArea" rows="3" class="form-control"></textarea></div> <button data-v-4374f9ca="" type="submit" class="btn btn-primary">提交
+  </button> <hr data-v-4374f9ca=""> <h3 data-v-4374f9ca="" style="margin-bottom: 20px;">评论</h3>  <!----></div>
+</div>
+</div>
+</div>
+<link rel="stylesheet" href="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/katex.css">
+<footer class="bread-footer">
+<div class="container">
+<div class="row">
+<div class="col">
+<ul class="list-inline text-center" style="margin-bottom: 10px">
+<li>
+<a target="_blank" href="https://www.luogu.org/">
+<span class="fa-stack fa-lg">
+<i class="fa fa-circle fa-stack-2x"></i>
+<i class="fa  fa-stack-1x fa-inverse">洛</i>
+</span>
+</a>
+</li>
+<li>
+<a target="_blank" href="https://github.com/luogu-dev/luogu-blog-frontend">
+<span class="fa-stack fa-lg">
+<i class="fa fa-circle fa-stack-2x"></i>
+<i class="fa fa-github fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+</ul>
+<p class="copyright text-muted">
+<a class="item" href="https://tiger0132.blog.luogu.org/_sitemap">Site Map </a>
+<br>
+Powered by Luogu Blog. Theme by <a href="https://github.com/Himself65">Himself65</a>. All rights reserved.
+<br>
+</p>
+</div>
+</div>
+</div>
+</footer>
+
+<script>
+var BlogGlobals = {
+  blogName: document.querySelector('meta[name=blog-name]').getAttribute('content'),
+  blogUID: parseInt(document.querySelector('meta[name=blog-uid]').getAttribute('content')),
+  currentUser: parseInt(document.querySelector('meta[name=current-user]').getAttribute('content')),
+  luoguAddress: 'https://www.luogu.org',
+  picAddress: 'https://cdn.luogu.org'
+}
+</script>
+<script>
+var $body = document.body;
+var $nav = document.querySelector('nav');
+var $toggle = document.querySelector('.navbar-toggle');
+var $navbar = document.querySelector('#bread-navbar');
+var $collapse = document.querySelector('.navbar-collapse');
+
+var __BreadNav__ = {
+  close: function () {
+    $navbar.className = " ";
+    setTimeout(function () {
+      if ($navbar.className.indexOf('in') < 0) {
+        $collapse.style.height = "0px";
+      }
+    }, 400)
+  },
+  open: function () {
+    $collapse.style.height = "auto";
+    $navbar.className += " in";
+  }
+}
+
+let defaultClassName = $nav.className;
+$body.addEventListener('scroll', function (e) {
+  let scrollTop = document.body.scrollTop;
+  if (scrollTop !== 0) {
+    if ($nav.className.indexOf('navbar-white') < 0) {
+      $nav.className += " navbar-white"
+    }
+  } else {
+    $nav.className = defaultClassName
+  }
+})
+
+$body.addEventListener('click', function (e) {
+  if ($navbar.className.indexOf('in') > 0) {
+    __BreadNav__.close()
+  } else {
+    __BreadNav__.open()
+  }
+})
+
+$body.addEventListener('click', function (e) {
+  if (e.target === $toggle) return;
+  if (e.target.className === 'icon-bar') return;
+  __BreadNav__.close();
+})
+</script>
+<script src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/common.js.下载"></script>
+<script>
+var blogContainer = document.getElementById('blog-container')
+BlogGlobals.blogID = parseInt(blogContainer.getAttribute('data-blogid'))
+BlogGlobals.vote = parseInt(blogContainer.getAttribute('data-vote'))
+BlogGlobals.thumbUp = parseInt(blogContainer.getAttribute('data-thumbUp'))
+</script>
+<script src="./Splay简易教程 - Tiger0132的博客 - 洛谷博客_files/article.js.下载"></script>
+
+</body></html>
