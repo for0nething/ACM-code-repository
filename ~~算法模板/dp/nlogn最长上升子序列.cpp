@@ -1,7 +1,6 @@
 
 const int MAXN=500010;
 int a[MAXN],b[MAXN];
-
 //用二分查找的方法找到一个位置，使得num>b[i-1] 并且num<b[i],并用num代替b[i]
 int Search(int num,int low,int high)
 {

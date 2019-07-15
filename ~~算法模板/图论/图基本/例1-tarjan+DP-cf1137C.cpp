@@ -88,7 +88,6 @@ template<class T> inline int half(int x){return x&1?(x+MOD)>>1:x>>1;}
 
 //vector<int>G[MAX];
 int pre[MAX][52],lowlink[MAX][52],sccno[MAX][52],dfn,scc_cnt;
-//stack<pii>S;
 pii S[MAX*52];
 int dp[MAX*52];
 bool ava[MAX][52],have[MAX];
@@ -104,7 +103,6 @@ void dfs(int u,int day){
     pre[u][day]=lowlink[u][day]=++dfn;
     S[++top]=mp(u,day);assert(top<51*MAX);
     vi[u][day]=1;
-//    S.push(mp(u,day));
     int nxt_day=(day+1)%d;
     for(int i=head[u];i;i=edg[i].nxt){
         int v=edg[i].to;

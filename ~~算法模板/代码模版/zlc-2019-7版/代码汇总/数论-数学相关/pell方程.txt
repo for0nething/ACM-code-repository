@@ -1,0 +1,7 @@
+x^2-D*y^2=n
+打表求出第一项
+然后下面的项可以线性递推
+xk+sqrt(D)yk=(x1+sqrt(D)y1)^k
+
+xn+1=x0xn+Dy0yn
+yn+1=y0xn+x0yn

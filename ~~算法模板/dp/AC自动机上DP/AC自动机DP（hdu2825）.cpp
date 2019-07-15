@@ -77,8 +77,6 @@ int n,m,k;
 char tem[20];
 ll dp[26][105][1024];
 ll num[1024],an;
-
-//vector<int> to[105];
 int main()
 {
     num[0]=0;
@@ -101,7 +99,6 @@ int main()
                     if(!dp[i][j][s])continue;//�޵�ǰ״̬
                     for(int k=0;k<26;k++)
                     {
-//                        (dp[i+1][AC.ch[j][k]][s|AC.val[AC.ch[j][k]]]+=dp[i][j][s])%MOD;
                         dp[i+1][AC.ch[j][k]][s|AC.val[AC.ch[j][k]]]+=dp[i][j][s];
                         dp[i+1][AC.ch[j][k]][s|AC.val[AC.ch[j][k]]]%=MOD;
                     }
